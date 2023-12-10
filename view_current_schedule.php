@@ -42,7 +42,7 @@ $schedule = getStudentSchedule($db_connection, $studentId);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal</title>
+    <title>My Current Schedule</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -59,8 +59,6 @@ $schedule = getStudentSchedule($db_connection, $studentId);
                     <a href='student_dashboard.php' class="btn btn-dark">Student</a>
                 </div>
                 <div class="col text-right">
-                    <a href="student_dashboard.php" class="btn btn-link" style="color: #000000;">Home</a>
-                    <a href="contact.php" class="btn btn-link" style="color: #000000;">Contact</a>
                     <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
                     <a href="logout.php" class="btn btn-dark">Log out</a>
                 </div>
@@ -112,7 +110,7 @@ $schedule = getStudentSchedule($db_connection, $studentId);
     <footer>
         <div class="footer row padding pr-4">
             <div class="col text-right">
-                <p>Copyright &copy; 2022 Company Name.</p>
+                <p>Copyright &copy; 2022 Super Coders.</p>
             </div>
         </div>
 

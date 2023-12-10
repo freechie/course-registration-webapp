@@ -2,15 +2,14 @@
 session_start();
 
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: student_login.php");
+    header("Location: admin_login.php");
     exit;
 }
 
-$studentId = $_SESSION['sid'] ?? null;
-$userName = $_SESSION['username'] ?? 'Guest';
+$adminId = $_SESSION['admin_id'] ?? null;
+$adminUsername = $_SESSION['admin_username'] ?? 'Admin';
 
-// Set the default timezone if necessary
-date_default_timezone_set('America/New_york'); 
+date_default_timezone_set('America/New_York');
 $currentDateTime = date('F j, Y, g:i a');
 ?>
 
@@ -21,7 +20,7 @@ $currentDateTime = date('F j, Y, g:i a');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>Admin Edit Courses</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -35,10 +34,11 @@ $currentDateTime = date('F j, Y, g:i a');
         <header>
             <div class="navbar navbar-expand-lg navbar-light padding">
                 <div class="col text-left">
-                    <a href='student_dashboard.php' class="btn btn-dark">Student</a>
+                    <a href='student_dashboard.php' class="btn btn-dark">Admin</a>
                 </div>
                 <div class="col text-right">
-                    <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
+
+                    <a href="admin_dashboard.php" class="btn btn-outline-dark">My Account</a>
                     <a href="logout.php" class="btn btn-dark">Log out</a>
                 </div>
             </div>
@@ -46,31 +46,27 @@ $currentDateTime = date('F j, Y, g:i a');
         <!-- Main Content -->
         <main>
             <div class="row padding main-content">
-                <!-- Sidebar -->
                 <div class="col-md-4 sidebar pl-4">
-                    <h5>Welcome, <?php echo htmlspecialchars($userName); ?></h5>
+                    <h5>Welcome, <?php echo htmlspecialchars($adminUsername); ?></h5>
                     <p><?php echo $currentDateTime; ?></p>
-                    <a href="view_current_schedule.php" class="btn btn-custom btn-block">View My Courses</a>
-                    <a href="addCourse.php" class="btn btn-custom-1 btn-block">Add Course</a>
-                    <a href="dropCourse.php" class="btn btn-custom-2 btn-block">Drop Course</a>
+                    <!-- Admin Sidebar Links -->
+                    <a href="admin_view_student_schedules.php" class="btn btn-custom-1 btn-block">View Student Schedules</a>
+                    <a href="add_course.php" class="btn btn-custom-1 btn-block">Add New Course</a>
                 </div>
-                <!-- Content next to left sidebar -->
                 <div class="col-md-8 main-content loader pr-4">
-                    <br>
-                    <h5>Please select an option to the left to access your Student Portal Functions</h5>
+                    <h5>Select an option from the sidebar to manage the portal</h5>
+                    <!-- ... Edit Courses Content ... -->
                 </div>
             </div>
         </main>
-    </div>
-    <!-- Footer -->
-    <footer>
-        <div class="footer row padding pr-4">
-            <div class="col text-right">
-                <p>Copyright &copy; 2022 Super Coders.</p>
+        <footer>
+            <div class="footer row padding pr-4">
+                <div class="col text-right">
+                    <p>Copyright &copy; 2022 Super Coders</p>
+                </div>
             </div>
-        </div>
-
-    </footer>
+        </footer>
+    </div>
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

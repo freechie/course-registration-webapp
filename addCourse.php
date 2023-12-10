@@ -62,7 +62,7 @@ $currentDateTime = date('F j, Y, g:i a');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal</title>
+    <title>Student Add Course Portal</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -79,8 +79,6 @@ $currentDateTime = date('F j, Y, g:i a');
                     <a href='student_dashboard.php' class="btn btn-dark">Student</a>
                 </div>
                 <div class="col text-right">
-                    <a href="student_dashboard.php" class="btn btn-link" style="color: #000000;">Home</a>
-                    <a href="contact.php" class="btn btn-link" style="color: #000000;">Contact</a>
                     <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
                     <a href="logout.php" class="btn btn-dark">Log out</a>
                 </div>
@@ -101,7 +99,7 @@ $currentDateTime = date('F j, Y, g:i a');
                 </div>
                 <div class="col-md-8 main-content loader">
                     <br>
-                    <h5>Add Course(s):</h5>
+                    <h5>Add a course to your schedule:</h5>
                     <br>
                     <?php if (!empty($message)) echo "<p>$message</p>"; ?>
                     <form method="post">
@@ -121,7 +119,7 @@ $currentDateTime = date('F j, Y, g:i a');
         <footer>
             <div class="footer row padding pr-4">
                 <div class="col text-right">
-                    <p>Copyright &copy; 2022 Company Name.</p>
+                    <p>Copyright &copy; 2022 Super Coders.</p>
                 </div>
             </div>
 

@@ -48,10 +48,6 @@ include_once 'config.php';
                             <label for="admin_password">Password:</label>
                             <input type="password" class="form-control" id="admin_password" name="admin_password" placeholder="enter password" required>
                         </div>
-                        <div class="form-group">
-                            <label for="password">Password: </label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="password" required>
-                        </div>
                         <br>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary d-inline-block mb-2 mr-md-2">Login</button>
@@ -64,7 +60,7 @@ include_once 'config.php';
 
         <footer class="bg-darker text-center text-white container">
             <div class="footer-copyright text-center py-3">
-                &nbsp;&copy; <?php echo date("Y"); ?> University System. All Rights Reserved.
+                &nbsp;&copy; <?php echo date("Y"); ?> University System. Super Coders All Rights Reserved.
             </div>
         </footer>
     </div>

@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-  <title>University Shuttle Bus App</title>
+  <title>Register Student Account</title>
 
   <!-- Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
@@ -92,7 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Registration section -->
     <section class="container">
       <div class="form-container border p-4">
-        <h3 class="text-center">Create a new student account</h3>
+        <h3 class="text-center">Create A New Student Account</h3>
         <?php if ($error_message) : ?>
           <p class="error"><?php echo $error_message; ?></p>
         <?php endif; ?>
@@ -135,9 +135,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="footer-copyright text-center py-3">
       <!-- Footer links -->
       <br><br>
-      <a href="privacy-policy.php">Privacy Policy</a> &middot; <a href="terms-of-service.php">Terms of Service</a>
       &nbsp;&copy;
-      <?php echo date("Y"); ?> University Shuttle Bus App. All Rights Reserved.
+      <?php echo date("Y"); ?> University System. Super Coders All Rights Reserved.
     </div>
   </footer>
 

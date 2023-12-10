@@ -20,7 +20,7 @@ $currentDateTime = date('F j, Y, g:i a');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Portal</title>
+    <title>Admin Dashboard</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -37,8 +37,7 @@ $currentDateTime = date('F j, Y, g:i a');
                     <a href='student_dashboard.php' class="btn btn-dark">Admin</a>
                 </div>
                 <div class="col text-right">
-                    <a href="admin_dashboard.php" class="btn btn-link" style="color: #000000;">Home</a>
-                    <a href="contact.php" class="btn btn-link" style="color: #000000;">Contact</a>
+
                     <a href="admin_dashboard.php" class="btn btn-outline-dark">My Account</a>
                     <a href="logout.php" class="btn btn-dark">Log out</a>
                 </div>
@@ -51,9 +50,10 @@ $currentDateTime = date('F j, Y, g:i a');
                     <h5>Welcome, <?php echo htmlspecialchars($adminUsername); ?></h5>
                     <p><?php echo $currentDateTime; ?></p>
                     <!-- Admin Sidebar Links -->
-                    <a href="manage_users.php" class="btn btn-custom btn-block">Manage Users</a>
-                    <a href="view_reports.php" class="btn btn-custom-1 btn-block">View Reports</a>
                     <a href="admin_view_student_schedules.php" class="btn btn-custom-1 btn-block">View Student Schedules</a>
+                    <a href="add_course.php" class="btn btn-custom-1 btn-block">Add New Course</a>
+                    <a href="edit_courses.php" class="btn btn-custom-1 btn-block">Edit Courses</a>
+
                     <!-- ... other admin links ... -->
                 </div>
                 <div class="col-md-8 main-content loader pr-4">
@@ -65,7 +65,7 @@ $currentDateTime = date('F j, Y, g:i a');
         <footer>
             <div class="footer row padding pr-4">
                 <div class="col text-right">
-                    <p>Copyright &copy; 2022</p>
+                    <p>Copyright &copy; 2022 Super Coders</p>
                 </div>
             </div>
         </footer>

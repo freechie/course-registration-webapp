@@ -1,46 +1,47 @@
 <?php
 session_start();
-include_once 'config.php'; // Include the database configuration file
+include_once 'config.php'; // Include the PDO connection
 
-// Function to fetch the total number of pages
-function getTotalPages($db, $recordsPerPage)
-{
-    $stmt = $db->query("SELECT COUNT(sid) FROM students");
-    $totalRecords = $stmt->fetchColumn();
-    return ceil($totalRecords / $recordsPerPage);
-}
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
-// Function to fetch students for a specific page
-function fetchStudentsForPage($db, $currentPage, $recordsPerPage)
-{
-    $offset = ($currentPage - 1) * $recordsPerPage;
-    $stmt = $db->prepare("SELECT sid, sname FROM students LIMIT :limit OFFSET :offset");
-    $stmt->bindParam(':limit', $recordsPerPage, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $cid = $_POST["cid"];
+    $course_name = $_POST["cname"];
+    $instructor = isset($_POST["instructor"]) ? $_POST["instructor"] : '';
+    $day = isset($_POST["day"]) ? $_POST["day"] : '';
+    $time = isset($_POST["time"]) ? $_POST["time"] : '';
 
-// Function to fetch a student's schedule
-function fetchStudentSchedule($db, $studentId)
-{
-    $stmt = $db->prepare("SELECT c.cid, c.cname, c.instructor, c.day, c.time FROM enrolled e JOIN courses c ON e.cid = c.cid WHERE e.sid = :studentId");
-    $stmt->bindParam(':studentId', $studentId, PDO::PARAM_INT);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        // Check if the course already exists in the database
+        $checkStmt = $db_connection->prepare("SELECT * FROM courses WHERE cid = :cid");
+        $checkStmt->bindParam(':cid', $cid);
+        $checkStmt->execute();
+
+        if ($checkStmt->rowCount() > 0) {
+            echo "Course already exists!";
+        } else {
+            // Insert course
+            $insertStmt = $db_connection->prepare("INSERT INTO courses (cid, cname, instructor, day, time) VALUES (:cid, :cname, :instructor, :day, :time)");
+            $insertStmt->bindParam(':cid', $cid);
+            $insertStmt->bindParam(':cname', $course_name);
+            $insertStmt->bindParam(':instructor', $instructor);
+            $insertStmt->bindParam(':day', $day);
+            $insertStmt->bindParam(':time', $time);
+            $insertStmt->execute();
+
+            echo "Course added successfully!";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
 }
 
 $adminId = $_SESSION['admin_id'] ?? null;
 $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
-
 date_default_timezone_set('America/New_York');
 $currentDateTime = date('F j, Y, g:i a');
 
-// Pagination settings
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$recordsPerPage = 10;
-$totalPages = getTotalPages($db_connection, $recordsPerPage);
-$students = fetchStudentsForPage($db_connection, $currentPage, $recordsPerPage);
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +85,29 @@ $students = fetchStudentsForPage($db_connection, $currentPage, $recordsPerPage);
                 </div>
                 <div class="col-md-8 main-content loader pr-4">
                     <h5>Add a new course to the Course Registrar below:</h5>
-                    <!-- ... Content ... -->
+                    <!-- ... Admin Add Course Content ... -->
+                    <div class="form-group row">
+                        <form method="POST" action="add_course.php">
+                            <label for="cid">Course ID:</label>
+                            <input type="text" id="cid" name="cid" required><br><br>
+
+                            <label for="cname">Course Name:</label>
+                            <input type="text" id="cname" name="cname" required><br><br>
+                            <!-- Existing form fields -->
+                            <label for="instructor">Instructor:</label>
+                            <input type="text" id="instructor" name="instructor" required><br><br>
+
+                            <label for="day">Day:</label>
+                            <input type="text" id="day" name="day" required><br><br>
+
+                            <label for="time">Time:</label>
+                            <input type="text" id="time" name="time" required><br><br>
+
+                            <input type="submit" value="Add Course" class="btn btn-primary mt-3">
+                        </form>
+                    </div>
+
+
                 </div>
 
             </div>

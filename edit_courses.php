@@ -1,5 +1,36 @@
 <?php
 session_start();
+include_once 'config.php'; // Include the PDO connection from config.php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve and sanitize the form data
+    $courseToRemove = $_POST["cid"];
+
+    try {
+        // Check if the course exists in the database
+        $checkStmt = $db_connection->prepare("SELECT * FROM courses WHERE cid = :cid");
+        $checkStmt->bindParam(':cid', $courseToRemove);
+        $checkStmt->execute();
+
+        if ($checkStmt->rowCount() > 0) {
+            // Remove course
+            $deleteStmt = $db_connection->prepare("DELETE FROM courses WHERE cid = :cid");
+            $deleteStmt->bindParam(':cid', $courseToRemove);
+            $deleteStmt->execute();
+
+            echo "Course removed successfully!";
+        } else {
+            echo "Course does not exist!";
+        }
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
+
 
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("Location: admin_login.php");
@@ -54,8 +85,27 @@ $currentDateTime = date('F j, Y, g:i a');
                     <a href="add_course.php" class="btn btn-custom-1 btn-block">Add New Course</a>
                 </div>
                 <div class="col-md-8 main-content loader pr-4">
-                    <h5>Select an option from the sidebar to manage the portal</h5>
-                    <!-- ... Edit Courses Content ... -->
+                    <h5>Remove Courses</h5>
+                    <!-- ... Admin Remove Courses Content ... -->
+                    <form method="POST" action="edit_courses.php">
+                        <label for="cid">Select Course to Remove:</label>
+                        <select id="cid" name="cid" class="form-control" required>
+                            <?php
+                            try {
+                                $result = $db_connection->query("SELECT `cid`, `cname`, `instructor` FROM `courses`");
+
+                                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                                    echo "<option value='{$row['cid']}'>{$row['cid']} - {$row['cname']} ({$row['instructor']})</option>";
+                                }
+                            } catch (PDOException $e) {
+                                echo "Error: " . $e->getMessage();
+                            }
+                            ?>
+                        </select>
+
+                        <input type="submit" value="Remove Selected Course" class="btn btn-danger mt-3">
+                    </form>
+
                 </div>
             </div>
         </main>

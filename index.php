@@ -83,18 +83,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
             </section>
+            
+            <!-- Footer -->
+            <footer class="bg-darker text-center text-white container">
+                <div class="footer-copyright text-center py-3">
+                    <!-- Footer links -->
+                    &nbsp;&copy;
+                    <?php echo date("Y"); ?> University Student Scheduling App. Super Coders All Rights Reserved.
+                </div>
+            </footer>
+        </div>
     </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="bg-darker text-center text-white container">
-        <div class="footer-copyright text-center py-3">
-            <!-- Footer links -->
-            &nbsp;&copy;
-            <?php echo date("Y"); ?> University Student Scheduling App. Super Coders All Rights Reserved.
-        </div>
-    </footer>
-    </div>
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

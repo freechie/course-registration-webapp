@@ -1,7 +1,3 @@
-Certainly! Integrating the provided project overview into a GitHub repository description format will make it clear and engaging for visitors. Here’s how it could be structured:
-
----
-
 **Project Name:** Student and Admin Website
 
 **Description:**

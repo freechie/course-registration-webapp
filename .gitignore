@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+
+/finalprojdatabase.sql
+/admins_desc.txt
+/students_table.txt
+/hashing_passwords.php

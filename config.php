@@ -1,28 +1,30 @@
 <?php
 
-// DB credentials
-$host = "[redacted]";
-$user = "[redacted]";
-$password = "[redacted]";
-$database = "[redacted]";
+// Database settings must be supplied by the runtime environment.
+$host = getenv('DB_HOST');
+$port = getenv('DB_PORT');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASSWORD');
+$database = getenv('DB_NAME');
 
-// Set DSN for the PDO connection
-$dsn = "mysql:host=$host;dbname=$database";
-
-try {
-    // Create a PDO connection
-    $db_connection = new PDO($dsn, $user, $password);
-    // Set the PDO error mode to exception
-    $db_connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // echo "Connected successfully";
-} catch (PDOException $e) {
-    // Handle connection error
-    die("Connection failed: " . $e->getMessage());
+if ($host === false || $port === false || $user === false || $password === false || $database === false) {
+    http_response_code(500);
+    exit('Database configuration is incomplete.');
 }
 
+$dsn = "mysql:host=$host;port=$port;dbname=$database;charset=utf8mb4";
 
-// Fetch courses from the database
+try {
+    $db_connection = new PDO($dsn, $user, $password, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
+    ]);
+} catch (PDOException $e) {
+    http_response_code(500);
+    exit('Database connection failed.');
+}
+
 function fetchCourses($pdo)
 {
     $stmt = $pdo->prepare("SELECT cid, cname, day, time FROM courses");
@@ -30,17 +32,14 @@ function fetchCourses($pdo)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-
 function checkConstraints($pdo, $studentId, $courseId)
 {
-    // First, get the day and time of the course the student is trying to add
     $courseStmt = $pdo->prepare("SELECT day, time FROM courses WHERE cid = :cid");
     $courseStmt->bindParam(':cid', $courseId, PDO::PARAM_INT);
     $courseStmt->execute();
     $courseData = $courseStmt->fetch(PDO::FETCH_ASSOC);
 
     if ($courseData) {
-        // Now check if the student is already enrolled in a course at this day and time
         $stmt = $pdo->prepare("
             SELECT e.* FROM enrolled e
             JOIN courses c ON e.cid = c.cid
@@ -52,7 +51,6 @@ function checkConstraints($pdo, $studentId, $courseId)
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            // Conflict found
             return false;
         }
     }

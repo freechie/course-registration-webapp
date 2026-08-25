@@ -1,24 +1,76 @@
-**Project Name:** Student and Admin Website
+# Course Registration Database System
 
-**Description:**
+This was built as a database systems final project. The PHP interface demonstrates how students and administrators interact with a small relational database for accounts, courses, and enrollment records.
 
-The Student and Admin Website is a dynamic web platform designed to cater to the needs of both students and administrators within an educational institution. This project showcases a working website that allows for seamless interaction with key functionalities tailored to each user group. Developed using HTML5, CSS for the frontend, PHP for the backend, and SQL for database management, this website stands as a testament to efficient and secure web development practices.
+## Database design
 
-**Key Functionalities:**
+The schema is in [`database/schema.sql`](database/schema.sql). It contains four tables:
 
-### For Students:
-- **Login:** Secure login mechanism for student accounts.
-- **Account Creation:** A registration feature ensuring security and privacy.
-- **Homepage Access:** A dashboard with various functionalities post-login.
-- **View Current Schedule:** Enables students to view their class schedules.
-- **Add/Drop a Course:** Features to modify course schedules, including checks for schedule conflicts.
+| Table | Purpose |
+| --- | --- |
+| `admins` | Administrator identity, unique username, and password field |
+| `students` | Student identity, unique username, and password field |
+| `courses` | Course catalog entries with instructor, day, and time |
+| `enrolled` | Join table connecting students to courses |
 
-### For Admins:
-- **Login:** Dedicated login functionality for admin users.
-- **Course Management:** Tools to manage course offerings, including the ability to edit, delete, or add courses.
-- **Student Account Management:** Oversight of student accounts with the capability to delete them as needed.
+`enrolled` models the many-to-many relationship between students and courses. Its composite primary key prevents duplicate enrollment, while foreign keys prevent enrollment rows from referring to missing students or courses. Username constraints prevent duplicate login names.
 
-**Technology Stack:**
-- **Frontend:** HTML5, CSS - Crafting user-friendly interfaces.
-- **Backend:** PHP - Handling server-side logic and database interactions.
-- **Database:** SQL - Efficient management of student and course data.
+The checked-in rows are fictional fixtures only. Password columns contain obvious, unusable dummy values rather than real credentials. Locally created student accounts use PHP's `password_hash`, and login checks use `password_verify`.
+
+## Database operations
+
+The application uses PHP PDO for MySQL access. Database work includes:
+
+- prepared statements for user-supplied values;
+- student and administrator authentication queries;
+- course creation, editing, and deletion;
+- enrollment insertion and deletion;
+- joins for student schedule views; and
+- a schedule-conflict query that compares course day and time.
+
+Connection settings are read from environment variables in [`config.php`](config.php). No database credentials are stored in tracked source files.
+
+## Run locally
+
+Requirements:
+
+- PHP with the PDO MySQL extension
+- MySQL or MariaDB
+- a web server such as PHP's development server or Apache in XAMPP
+
+1. Create a local environment file from the placeholder template:
+
+   ```sh
+   cp .env.example .env
+   ```
+
+2. Replace every placeholder in `.env` with local-only database settings. The file is ignored by Git.
+
+3. Import the schema and fictional fixtures:
+
+   ```sh
+   mysql -u your_local_user -p < database/schema.sql
+   ```
+
+4. Export the settings and start the PHP development server:
+
+   ```sh
+   set -a
+   source .env
+   set +a
+   php -S 127.0.0.1:8000
+   ```
+
+5. Open `http://127.0.0.1:8000`.
+
+The fixture password values intentionally cannot be used to sign in. Create a local student account through the application or replace fixture values with locally generated password hashes.
+
+## Application flows
+
+Students can create an account, sign in, view a schedule, and add or drop courses. Administrators can sign in, manage course offerings, and view student schedules.
+
+## Technology
+
+- PHP and PDO
+- MySQL or MariaDB
+- HTML and CSS

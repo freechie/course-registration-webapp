@@ -71,6 +71,7 @@ $schedule = getStudentSchedule($db_connection, $studentId);
                     <br>
                     <h5>Current Schedule:</h5>
                     <br>
+                    <div class="table-scroll">
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
@@ -93,6 +94,7 @@ $schedule = getStudentSchedule($db_connection, $studentId);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
+                    </div>
                 </div>
 
             </div>

@@ -65,7 +65,7 @@ $students = fetchStudentsForPage($db_connection, $currentPage, $recordsPerPage);
         <header>
             <div class="navbar navbar-expand-lg navbar-light padding">
                 <div class="col text-left">
-                    <a href='student_dashboard.php' class="btn btn-dark">Admin</a>
+                    <a href="admin_dashboard.php" class="btn btn-dark">Admin</a>
                 </div>
                 <div class="col text-right">
 
@@ -94,6 +94,7 @@ $students = fetchStudentsForPage($db_connection, $currentPage, $recordsPerPage);
                         $schedule = fetchStudentSchedule($db_connection, $student['sid']);
                         if (count($schedule) > 0) :
                         ?>
+                            <div class="table-scroll">
                             <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
@@ -116,6 +117,7 @@ $students = fetchStudentsForPage($db_connection, $currentPage, $recordsPerPage);
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
+                            </div>
                         <?php else : ?>
                             <p>No courses enrolled.</p>
                         <?php endif; ?>

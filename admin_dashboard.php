@@ -31,7 +31,7 @@ $currentDateTime = date('F j, Y, g:i a');
         <header>
             <div class="navbar navbar-expand-lg navbar-light padding">
                 <div class="col text-left">
-                    <a href='student_dashboard.php' class="btn btn-dark">Admin</a>
+                    <a href="admin_dashboard.php" class="btn btn-dark">Admin</a>
                 </div>
                 <div class="col text-right">
 

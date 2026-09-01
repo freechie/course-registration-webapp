@@ -70,6 +70,18 @@ The fixture password values intentionally cannot be used to sign in. Create a lo
 
 Students can create an account, sign in, view a schedule, and add or drop courses. Administrators can sign in, manage course offerings, and view student schedules.
 
+Student schedule after enrollment:
+
+![Student current schedule](docs/student-current-schedule.png)
+
+Administrator course catalog:
+
+![Administrator remove-course view](docs/admin-edit-courses.png)
+
+Administrator view of student schedules:
+
+![Administrator student schedules](docs/admin-student-schedules.png)
+
 ## Security model
 
 Authentication creates an explicit `student` or `admin` session role. Every protected route checks that role before loading application data, so a student session cannot reach administrator pages or mutations. Login rotates the session identifier. Every state-changing form, including logout, requires a session-bound CSRF token.
@@ -92,9 +104,20 @@ To run only syntax and focused security checks when Docker is unavailable:
 SKIP_INTEGRATION=1 ./scripts/verify.sh
 ```
 
+## Authorship
+
+This was a 2022 Internet Computing class group project credited on-screen as Super Coders. The original course report (removed from public history during the security cleanup) described these work areas:
+
+- administrator course management
+- schedule viewing
+- logout
+- wireframes and CSS
+
+Individual contributor names are not in the current Git tree. Only later maintenance commits by this repository's owner are on `main`. Names should be added here once the original group confirms them.
+
 ## License status
 
-This was a group project for an Internet Computing class. The repository does not currently grant an open-source license. Licensing should wait until the original contributors agree on a license and the README records authorship and contribution boundaries.
+The repository does not grant an open-source license. Licensing should wait until the original contributors agree.
 
 ## Technology
 

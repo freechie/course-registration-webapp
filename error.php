@@ -1,7 +1,4 @@
 <?php
-session_start();
-include_once 'config.php';
-
 // Get the error message from the query string
 $errorMsg = isset($_GET['error']) ? htmlspecialchars($_GET['error']) : 'Unknown error occurred.';
 

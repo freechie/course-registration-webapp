@@ -1,16 +1,13 @@
 <?php
-session_start();
-// Turn off error displaying in production environment
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('student', 'student_login.php');
 
-include_once 'config.php';
-
-// Redirect if not logged in
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: student_login.php");
-    exit;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    require_valid_csrf_token();
 }
+
+require_once __DIR__ . '/config.php';
 
 $studentId = $_SESSION['sid'] ?? null;
 $userName = $_SESSION['username'] ?? 'Guest';
@@ -79,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <div class="col text-right">
                     <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>
@@ -99,6 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <p><?php echo $message; ?></p>
                     <?php endif; ?>
                     <form method="post">
+                        <?php echo csrf_input(); ?>
                         <div class="form-group">
                             <label for="cid">Select Course to Drop:</label>
                             <select name="cid" id="cid" class="form-control" required>

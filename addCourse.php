@@ -1,15 +1,13 @@
 <?php
-session_start();
-// Turn off error displaying in production environment
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('student', 'student_login.php');
 
-include_once 'config.php';
-
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: student_login.php");
-    exit;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    require_valid_csrf_token();
 }
+
+require_once __DIR__ . '/config.php';
 
 function addCourse($pdo, $studentId, $courseId)
 {
@@ -80,7 +78,7 @@ $currentDateTime = date('F j, Y, g:i a');
                 </div>
                 <div class="col text-right">
                     <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>
@@ -103,6 +101,7 @@ $currentDateTime = date('F j, Y, g:i a');
                     <br>
                     <?php if (!empty($message)) echo "<p>$message</p>"; ?>
                     <form method="post">
+                        <?php echo csrf_input(); ?>
                         <select name="cid" id="cid" required>
                             <?php foreach ($courses as $course) : ?>
                                 <option value="<?php echo htmlspecialchars($course['cid']); ?>">

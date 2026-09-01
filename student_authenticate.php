@@ -1,51 +1,32 @@
 <?php
-// Turn off error displaying in production environment
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
 
-session_start();
-
-include_once 'config.php'; // Ensure this file has the correct PDO connection setup
-
-// Validate and sanitize username and password
-$username = isset($_POST['username']) ? htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') : '';
-$password = isset($_POST['password']) ? htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8') : '';
-
-// CSRF token validation
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        header("Location: /student_login.php?error=Invalid request.");
-        exit();
-    }
-
-    // Regenerate CSRF token
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-
-    // Check if user is a student
-    $stmt = $db_connection->prepare("SELECT * FROM students WHERE username = :username LIMIT 1");
-    $stmt->bindParam(':username', $username);
-    $stmt->execute();
-
-    if ($stmt->rowCount() == 1) {
-        $student = $stmt->fetch();
-
-        if (password_verify($password, $student['password'])) {
-            // Regenerate session ID upon successful login
-            session_regenerate_id();
-
-            $_SESSION['loggedin'] = true;
-            $_SESSION['sid'] = $student['sid'];
-            $_SESSION['username'] = $student['username'];
-
-            header("Location: student_dashboard.php");
-            exit();
-        } else {
-            header("Location: /student_login.php?error=Invalid username or password.");
-            exit();
-        }
-    } else {
-        header("Location: /student_login.php?error=Invalid username or password.");
-        exit();
-    }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    exit('Method not allowed.');
 }
-?>
+
+require_valid_csrf_token();
+require_once __DIR__ . '/config.php';
+
+$username = is_string($_POST['username'] ?? null) ? trim($_POST['username']) : '';
+$password = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
+
+$stmt = $db_connection->prepare(
+    'SELECT sid, username, password FROM students WHERE username = :username LIMIT 1'
+);
+$stmt->execute(['username' => $username]);
+$student = $stmt->fetch();
+
+if ($student && password_verify($password, $student['password'])) {
+    establish_authenticated_session('student', [
+        'sid' => (int) $student['sid'],
+        'username' => $student['username'],
+    ]);
+    header('Location: student_dashboard.php');
+    exit;
+}
+
+header('Location: student_login.php?error=Invalid%20username%20or%20password.');
+exit;

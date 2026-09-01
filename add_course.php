@@ -1,9 +1,13 @@
 <?php
-session_start();
-include_once 'config.php'; // Include the PDO connection
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('admin', 'admin_login.php');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    require_valid_csrf_token();
+}
+
+require_once __DIR__ . '/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cid = $_POST["cid"];
@@ -33,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Course added successfully!";
         }
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+        echo "Unable to add course.";
     }
 }
 
@@ -68,7 +72,7 @@ $currentDateTime = date('F j, Y, g:i a');
                 </div>
                 <div class="col text-right">
                     <a href="admin_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>
@@ -88,6 +92,7 @@ $currentDateTime = date('F j, Y, g:i a');
                     <!-- ... Admin Add Course Content ... -->
                     <div class="form-group row">
                         <form method="POST" action="add_course.php">
+                            <?php echo csrf_input(); ?>
                             <label for="cid">Course ID:</label>
                             <input type="text" id="cid" name="cid" required><br><br>
 

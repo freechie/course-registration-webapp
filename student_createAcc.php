@@ -1,15 +1,12 @@
 <?php
-session_start();
-ini_set('display_errors', 1);
-include_once 'config.php'; // Include your config file
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
 
 $error_message = '';
 
 function isUserExisting($pdo, $username)
 {
-
-  global $db_connection;
-  $stmt = $db_connection->prepare("SELECT COUNT(*) FROM students WHERE username = :username");
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM students WHERE username = :username");
   $stmt->bindParam(':username', $username, PDO::PARAM_STR);
   $stmt->execute();
   return $stmt->fetchColumn() > 0;
@@ -17,9 +14,8 @@ function isUserExisting($pdo, $username)
 
 function registerUser($pdo, $sid, $sname, $username, $password)
 {
-  global $db_connection;
   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-  $stmt = $db_connection->prepare("INSERT INTO students (sid, sname, username, password) VALUES (:sid, :sname, :username, :password)");
+  $stmt = $pdo->prepare("INSERT INTO students (sid, sname, username, password) VALUES (:sid, :sname, :username, :password)");
   $stmt->bindParam(':sid', $sid, PDO::PARAM_INT);
   $stmt->bindParam(':sname', $sname, PDO::PARAM_STR);
   $stmt->bindParam(':username', $username, PDO::PARAM_STR);
@@ -28,6 +24,8 @@ function registerUser($pdo, $sid, $sname, $username, $password)
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  require_valid_csrf_token();
+  require_once __DIR__ . '/config.php';
   $sid = $_POST['sid'] ?? null;
   $sname = $_POST['sname'] ?? '';
   $username = $_POST['username'] ?? '';
@@ -36,11 +34,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   if ($password !== $confirm_password) {
     $error_message = "Passwords do not match.";
-  } else if (isUserExisting($pdo, $username)) {
+  } else if (isUserExisting($db_connection, $username)) {
     $error_message = "User already exists. Please choose a different username.";
   } else {
-    if ($sid && registerUser($pdo, $sid, $sname, $username, $password)) {
-      header("Location: student_dashboard.php");
+    if ($sid && registerUser($db_connection, $sid, $sname, $username, $password)) {
+      header("Location: student_login.php?registered=1");
       exit;
     } else {
       $error_message = "Error registering user.";
@@ -97,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <p class="error"><?php echo $error_message; ?></p>
         <?php endif; ?>
         <form method="POST" action="student_createAcc.php">
+          <?php echo csrf_input(); ?>
           <div class="form-group">
             <label for="name">Name: </label>
             <input type="text" class="form-control" id="sname" name="sname" placeholder="Name" required>

@@ -1,9 +1,13 @@
 <?php
-session_start();
-include_once 'config.php'; // Include the PDO connection from config.php
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('admin', 'admin_login.php');
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    require_valid_csrf_token();
+}
+
+require_once __DIR__ . '/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Retrieve and sanitize the form data
@@ -26,16 +30,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Course does not exist!";
         }
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+        echo "Unable to remove course.";
     }
 }
 
 
-
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: admin_login.php");
-    exit;
-}
 
 $adminId = $_SESSION['admin_id'] ?? null;
 $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
@@ -70,7 +69,7 @@ $currentDateTime = date('F j, Y, g:i a');
                 <div class="col text-right">
 
                     <a href="admin_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>
@@ -88,6 +87,7 @@ $currentDateTime = date('F j, Y, g:i a');
                     <h5>Remove Courses</h5>
                     <!-- ... Admin Remove Courses Content ... -->
                     <form method="POST" action="edit_courses.php">
+                        <?php echo csrf_input(); ?>
                         <label for="cid">Select Course to Remove:</label>
                         <select id="cid" name="cid" class="form-control" required>
                             <?php
@@ -95,10 +95,13 @@ $currentDateTime = date('F j, Y, g:i a');
                                 $result = $db_connection->query("SELECT `cid`, `cname`, `instructor` FROM `courses`");
 
                                 while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<option value='{$row['cid']}'>{$row['cid']} - {$row['cname']} ({$row['instructor']})</option>";
+                                    $courseId = htmlspecialchars($row['cid'], ENT_QUOTES, 'UTF-8');
+                                    $courseName = htmlspecialchars($row['cname'], ENT_QUOTES, 'UTF-8');
+                                    $instructor = htmlspecialchars($row['instructor'], ENT_QUOTES, 'UTF-8');
+                                    echo "<option value=\"$courseId\">$courseId - $courseName ($instructor)</option>";
                                 }
                             } catch (PDOException $e) {
-                                echo "Error: " . $e->getMessage();
+                                echo "Unable to load courses.";
                             }
                             ?>
                         </select>

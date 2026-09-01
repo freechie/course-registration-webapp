@@ -1,10 +1,7 @@
 <?php
-session_start();
-
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: admin_login.php");
-    exit;
-}
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('admin', 'admin_login.php');
 
 $adminId = $_SESSION['admin_id'] ?? null;
 $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
@@ -39,7 +36,7 @@ $currentDateTime = date('F j, Y, g:i a');
                 <div class="col text-right">
 
                     <a href="admin_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>

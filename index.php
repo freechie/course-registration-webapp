@@ -1,39 +1,3 @@
-<?php
-ini_set('display_errors', 1); // Turn on  error displaying
-ini_set('log_errors', 0); // don't Log errors instead of displaying them
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-session_start();
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// Database connection using PDO
-try {
-    // Replace 'your_host', 'your_database', 'username', and 'password' with your actual database details
-    $pdo = new PDO('mysql:host=localhost;dbname=finalprojdatabase', 'root', '');
-
-    // Set the PDO error mode to exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    // Connection is successfully established
-    //  echo "Connected successfully";
-} catch (PDOException $e) {
-    // Handle connection error
-    echo "Connection failed: " . $e->getMessage();
-}
-
-// CSRF Token validation for form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        // Handle the error, token mismatch
-    }
-    // Proceed with form processing
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 

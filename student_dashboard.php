@@ -1,10 +1,7 @@
 <?php
-session_start();
-
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
-    header("Location: student_login.php");
-    exit;
-}
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('student', 'student_login.php');
 
 $studentId = $_SESSION['sid'] ?? null;
 $userName = $_SESSION['username'] ?? 'Guest';
@@ -39,7 +36,7 @@ $currentDateTime = date('F j, Y, g:i a');
                 </div>
                 <div class="col text-right">
                     <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>

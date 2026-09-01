@@ -1,6 +1,6 @@
 # Course Registration Database System
 
-This was built as a database systems final project. The PHP interface demonstrates how students and administrators interact with a small relational database for accounts, courses, and enrollment records.
+This was built as a group project for an Internet Computing class. The PHP interface demonstrates how students and administrators interact with a small relational database for accounts, courses, and enrollment records.
 
 ## Database design
 
@@ -37,6 +37,7 @@ Requirements:
 - PHP with the PDO MySQL extension
 - MySQL or MariaDB
 - a web server such as PHP's development server or Apache in XAMPP
+- Docker for the disposable integration test
 
 1. Create a local environment file from the placeholder template:
 
@@ -68,6 +69,32 @@ The fixture password values intentionally cannot be used to sign in. Create a lo
 ## Application flows
 
 Students can create an account, sign in, view a schedule, and add or drop courses. Administrators can sign in, manage course offerings, and view student schedules.
+
+## Security model
+
+Authentication creates an explicit `student` or `admin` session role. Every protected route checks that role before loading application data, so a student session cannot reach administrator pages or mutations. Login rotates the session identifier. Every state-changing form, including logout, requires a session-bound CSRF token.
+
+Database error details are not returned to the browser. The public home and login pages do not open a database connection.
+
+## Verification
+
+Run the repository checks with:
+
+```sh
+./scripts/verify.sh
+```
+
+The script syntax-checks every PHP file, runs the focused security checks, and starts a disposable MySQL container for real HTTP workflow tests. Those tests cover account creation, student and administrator login, role separation, course management, enrollment changes, rejected CSRF requests, and logout. The test removes its container and database when it finishes. GitHub Actions runs the same command on pushes and pull requests.
+
+To run only syntax and focused security checks when Docker is unavailable:
+
+```sh
+SKIP_INTEGRATION=1 ./scripts/verify.sh
+```
+
+## License status
+
+This was a group project for an Internet Computing class. The repository does not currently grant an open-source license. Licensing should wait until the original contributors agree on a license and the README records authorship and contribution boundaries.
 
 ## Technology
 

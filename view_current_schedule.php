@@ -1,18 +1,10 @@
 <?php
-session_start();
-// Turn off error displaying in production environment
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('student', 'student_login.php');
+require_once __DIR__ . '/config.php';
 
-include_once 'config.php';
-
-$studentId = isset($_SESSION['sid']) ? $_SESSION['sid'] : null;
-
-if ($studentId === null) {
-    // Redirect to login page or handle the case where the user is not logged in
-    header("Location: student_login.php");
-    exit;
-}
+$studentId = $_SESSION['sid'];
 $userName = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest';
 
 // Get current date and time
@@ -60,7 +52,7 @@ $schedule = getStudentSchedule($db_connection, $studentId);
                 </div>
                 <div class="col text-right">
                     <a href="student_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>

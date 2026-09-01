@@ -1,14 +1,6 @@
 <?php
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-session_start();
-
-if (empty($_SESSION['csrf_token'])) {
-  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-include_once 'config.php'
-
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
 ?>
 
 <!DOCTYPE html>
@@ -55,8 +47,7 @@ include_once 'config.php'
       <div class="form-container border p-4">
         <h3 class="text-center">Student Log in Page</h3>
         <form method="POST" action="student_authenticate.php">
-          <!-- CSRF token -->
-          <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+          <?php echo csrf_input(); ?>
 
           <div class="form-group">
             <label for="username">Username: </label>

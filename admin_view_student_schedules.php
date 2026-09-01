@@ -1,6 +1,8 @@
 <?php
-session_start();
-include_once 'config.php'; // Include the database configuration file
+require_once __DIR__ . '/includes/security.php';
+start_secure_session();
+require_role('admin', 'admin_login.php');
+require_once __DIR__ . '/config.php';
 
 // Function to fetch the total number of pages
 function getTotalPages($db, $recordsPerPage)
@@ -68,7 +70,7 @@ $students = fetchStudentsForPage($db_connection, $currentPage, $recordsPerPage);
                 <div class="col text-right">
 
                     <a href="admin_dashboard.php" class="btn btn-outline-dark">My Account</a>
-                    <a href="logout.php" class="btn btn-dark">Log out</a>
+                    <?php echo logout_form(); ?>
                 </div>
             </div>
         </header>
